@@ -17,3 +17,19 @@
 """
 
 ignore = ["duplex", "alias", "configuration"]
+
+from sys import argv
+
+
+result = []
+file_name = argv[1]
+out_file = argv[2]
+with open(file_name) as g:
+    for line in g:
+        if not line.startswith('!'):
+            if not set(ignore) & set(line.split()):
+                result.append(line)
+
+with open(out_file, 'a') as o:
+    for line in result:
+        o.write(line)

@@ -40,3 +40,15 @@
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 
 """
+
+template = "{:<9}{:<19}{}"
+macs = []
+with open('CAM_table.txt') as g:
+    for line in g:
+        line_mac = line.split()
+        if (len(line_mac) > 2) and '.' in line_mac[1]:
+            macs.append([int(line_mac[0]), line_mac[1], line_mac[3]])
+
+for i in sorted(macs):
+    print(template.format(i[0], i[1], i[2]))
+

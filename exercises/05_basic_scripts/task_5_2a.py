@@ -49,3 +49,39 @@ bin_ip = "00001010000000010000000111000011"
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 
 """
+vvod = input("Введите IP (пример: 10.1.1.1/24):")
+
+ip, mask = vvod.split('/')
+
+ip_list = ip.split('.')
+
+
+output_ip = """
+Network:
+{0:<10}{1:<10}{2:<10}{3:<10}
+{0:08b}  {1:08b}  {2:08b}  {3:08b}"""
+
+output_mask = """
+Mask:
+/{4}
+{0:<10}{1:<10}{2:<10}{3:<10}
+{0:08b}  {1:08b}  {2:08b}  {3:08b}"""
+
+
+ip_mask = "1" * int(mask) + "0" * (32 - int(mask))
+octets_mask = []
+octets_mask.append(int(ip_mask[0:8], 2))
+octets_mask.append(int(ip_mask[8:16], 2))
+octets_mask.append(int(ip_mask[16:24], 2))
+octets_mask.append(int(ip_mask[24:32], 2))
+
+ip_bin ="{0:08b}{1:08b}{2:08b}{3:08b}".format(int(ip_list[0]), int(ip_list[1]), int(ip_list[2]), int(ip_list[3]))
+ip_host = ip_bin[0:int(mask)] + "0" * (32 - int(mask))
+octets = []
+octets.append(int(ip_host[0:8], 2))
+octets.append(int(ip_host[8:16], 2))
+octets.append(int(ip_host[16:24], 2))
+octets.append(int(ip_host[24:32], 2))
+
+print(output_ip.format(int(octets[0]),int(octets[1]),int(octets[2]), int(octets[3])))
+print(output_mask.format(int(octets_mask[0]),int(octets_mask[1]),int(octets_mask[2]),int(octets_mask[3]),mask))

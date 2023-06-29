@@ -16,3 +16,11 @@
 """
 
 mac = "AAAA:BBBB:CCCC"
+list_mac = []
+for char in mac:
+    if char.isalpha():
+        list_mac.append("{:b}".format((int(char, 16))))
+
+result = ''.join(list_mac)
+print(result)
+
