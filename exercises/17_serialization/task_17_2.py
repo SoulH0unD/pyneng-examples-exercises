@@ -42,10 +42,47 @@
 
 Кроме того, создан список заголовков (headers), который должен быть записан в CSV.
 """
-
+import re
 import glob
+import csv
 
 sh_version_files = glob.glob("sh_vers*")
 # print(sh_version_files)
 
 headers = ["hostname", "ios", "image", "uptime"]
+ios_r = r"Version (?P<ios>\S+)"
+uptime_r = r"is (?P<upt>.+)"
+image_r = r"is (?P<img>.+)"
+
+def parse_sh_version(sh_vers):
+    for line in sh_vers.split("\n"):
+        if 'Cisco IOS Software' in line:
+            ios = re.search(ios_r, line).group('ios').replace(',','')
+        elif 'uptime is' in line:
+            uptime =re.search(uptime_r, line).group('upt')
+        elif 'image file is' in line:
+            image = re.search(image_r, line).group('img').replace('"','')
+
+    return ios, image, uptime
+
+def write_inventory_to_csv(filenames,output):
+    output_list = []
+    output_list.append(headers)
+    for filename in filenames:
+        hostname = filename.split('_')[-1].split('.')[0]
+        with open(filename) as f:
+            tmp = parse_sh_version(f.read())
+            output_list.append([hostname,tmp[0],tmp[1],tmp[2]])
+
+
+    with open(output, 'w') as f:
+        writer = csv.writer(f)
+        for row in sorted(output_list):
+           writer.writerow(row)
+
+
+
+
+
+if __name__ == "__main__":
+    print(write_inventory_to_csv(sh_version_files, 'result.csv'))

@@ -43,3 +43,28 @@
 > pip install graphviz
 
 """
+import yaml
+from pprint import pprint
+
+import sys
+sys.path.insert(1, '../11_modules')
+from task_11_2a import unique_network_map
+from draw_network_graph import draw_topology
+
+
+
+def transform_topology(filename):
+    with open(filename) as f:
+        templates = yaml.safe_load(f)
+    tmp_topology = {}
+    for k1, v1 in templates.items():
+        for k2, v2 in v1.items():
+            tmp_topology[(k1, k2)] = list(v2.items())[0]
+    result_topo = unique_network_map(tmp_topology)
+    draw_topology(result_topo)
+
+    return result_topo
+
+
+if __name__ == "__main__":
+    transform_topology('topology.yaml')

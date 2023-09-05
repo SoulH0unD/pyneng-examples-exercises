@@ -28,6 +28,9 @@ cisco_vpn_1.txt и cisco_vpn_2.txt.
 cisco_vpn_1.txt и cisco_vpn_2.txt.
 """
 
+import os
+from jinja2 import Environment, FileSystemLoader
+
 data = {
     "tun_num": 10,
     "wan_ip_1": "192.168.100.1",
@@ -35,3 +38,27 @@ data = {
     "tun_ip_1": "10.0.1.1 255.255.255.252",
     "tun_ip_2": "10.0.1.2 255.255.255.252",
 }
+
+def create_vpn_config(template1, template2, data_dict):
+    templ1_dir, templ1_file = os.path.split(template1)
+    templ2_dir, templ2_file = os.path.split(template2)
+
+    env1 = Environment(
+                        loader=FileSystemLoader(templ1_dir),
+                        trim_blocks=True, 
+                        lstrip_blocks=True
+                    )
+    templ1 = env1.get_template(templ1_file)
+
+    env2 = Environment(
+                        loader=FileSystemLoader(templ2_dir),
+                        trim_blocks=True, 
+                        lstrip_blocks=True
+                    )
+    templ2 = env2.get_template(templ2_file)
+
+    return templ1.render(data_dict), templ2.render(data_dict)
+
+
+if __name__ == "__main__":
+    print(create_vpn_config("templates/gre_ipsec_vpn_1.txt", "templates/gre_ipsec_vpn_2.txt", data))

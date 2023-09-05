@@ -15,3 +15,19 @@
 
 Проверить работу шаблона с помощью функции parse_command_output из задания 21.1.
 """
+from task_21_1 import parse_command_output
+from netmiko import ConnectHandler
+
+if __name__ == "__main__":
+    r1_params = {
+        "device_type": "cisco_ios",
+        "host": "192.168.0.1",
+        "username": "cisco",
+        "password": "cisco",
+        "secret": "cisco",
+    }
+    with ConnectHandler(**r1_params) as r1:
+        r1.enable()
+        output = r1.send_command("sh ip dhcp snooping binding")
+    result = parse_command_output("templates/sh_ip_int_br.template", output)
+    print(result)

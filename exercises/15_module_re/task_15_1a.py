@@ -24,3 +24,18 @@
 а не ввод пользователя.
 
 """
+import re
+
+def get_ip_from_cfg(file_name):
+    ip_mac = {}
+    with open(file_name) as f:
+        for line in  f:
+            if line.startswith('interface'):
+                intf = re.search(r'interface (?P<intf>\S+)', line).group('intf')
+            if line.startswith(' ip address'):
+                match = re.search(r'ip address (?P<ip>\d+\.\d+\.\d+\.\d+) (?P<mac>\d+\.\d+\.\d+\.\d+)', line)
+                ip_mac[intf] = ((match.group('ip'), match.group('mac')))
+    return ip_mac
+
+if __name__ == '__main__':
+    print(get_ip_from_cfg('config_r1.txt'))

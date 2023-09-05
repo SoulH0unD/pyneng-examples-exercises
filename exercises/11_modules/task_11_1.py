@@ -43,6 +43,25 @@ def parse_cdp_neighbors(command_output):
     и с файлами и с выводом с оборудования.
     Плюс учимся работать с таким выводом.
     """
+    dict_intf = {}
+    ind = 0
+    output_lines = []
+    for line in command_output.split("\n"):
+        if not line == '':
+            output_lines.append(line)
+    intf = output_lines[0].split('>')[0]
+    for i, line in enumerate(output_lines):
+        if "Device ID" in line:
+            ind = i
+            break
+    
+    for i in range(ind + 1, len(output_lines)):
+        tmp = output_lines[i].replace('Eth ', 'Eth').split()
+        if len(tmp) > 0:
+            dict_intf[(intf, tmp[1])] = (tmp[0], tmp[-1])
+            
+
+    return dict_intf
 
 
 if __name__ == "__main__":
